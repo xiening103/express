@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>文件上传表单</title>
+  <script src="jquery.min.js"></script>
+</head>
+<body>
+<h3>文件上传：</h3>
+选择一个文件上传: <br />
+<form>
+  <input type="file" name="image" id="fileId" size="50" />
+  <br />
+  <!--<input type="submit" value="上传文件" />-->
+</form>
+<img id="imgid"/>
+<script>
+  $('input[type="file"]').change(
+      function(){
+        var form=new FormData();
+        var files = $('input[type="file"]')[0].files;
+        form.append('image',files[0]);
+        console.log(files);
+        fetch('/file_upload',{
+          method:'POST',
+          mode:'no-cors',
+          body:form,
+        }).then(function(res){
+          return res.json();
+        }).then(function(json){
+          console.log(json);
+          var path=json.path;
+          var newpath=path.replace(/public\//,"");
+          console.log(newpath);
+          var imgele=$('<img class="imgclass"/>');
+          imgele.attr('src',newpath);
+          imgele.appendTo("body");
+        });
+      }
+  );
+
+</script>
+</body>
+</html>
